@@ -1,0 +1,1087 @@
+import os
+import zipfile
+from pathlib import Path
+
+def create_carpool_backend_project():
+    """Generate the complete Carpool Hub Backend project structure with .gitignore"""
+    
+    # Project files content (including the new .gitignore)
+    files = {
+        ".gitignore": """# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+# .python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poetry.lock
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm.fming.dev/#use-with-ide
+.pdm.toml
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.env.local
+.env.*.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be added to the global gitignore or merged into this project gitignore.  For a PyCharm
+#  project, it is recommended to include the following files in version control:
+#  - .idea/modules.xml
+#  - .idea/*.iml
+#  - .idea/misc.xml
+#  - .idea/vcs.xml
+.idea/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Local History for Visual Studio Code
+.history/
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+carpool_hub.db
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# IDE and editor files
+*.sublime-project
+*.sublime-workspace
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+uploads/
+media/
+static_collected/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Deployment
+.vercel
+.netlify
+
+# Local development
+.env.development
+.env.production
+.env.staging
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+test-results/
+
+# Documentation
+docs/_build/
+site/""",
+
+        ".env.example": """# Copy this file to .env and fill in your values
+
+# Database
+DATABASE_URL=sqlite:///./carpool_hub.db
+
+# Security (CHANGE THESE IN PRODUCTION!)
+SECRET_KEY=your-super-secret-key-here-change-in-production
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# CORS - Add your frontend URLs
+ALLOWED_ORIGINS=http://localhost:3000,https://your-frontend-domain.vercel.app
+
+# App Settings
+APP_NAME=Carpool Hub API
+APP_VERSION=1.0.0
+DEBUG=True
+
+# Email (Optional - for notifications)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+
+# External APIs (Optional)
+GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+
+# Database (Production - uncomment and use for production)
+# DATABASE_URL=postgresql://username:password@localhost/carpool_hub
+# DATABASE_URL=mysql://username:password@localhost/carpool_hub""",
+
+        "requirements.txt": """fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+pydantic[email]==2.5.0
+python-dotenv==1.0.0
+pydantic-settings==2.1.0""",
+
+        "config.py": """from pydantic_settings import BaseSettings
+from typing import List
+
+class Settings(BaseSettings):
+    # Database
+    database_url: str = "sqlite:///./carpool_hub.db"
+    
+    # Security
+    secret_key: str
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    
+    # CORS
+    allowed_origins: List[str] = ["http://localhost:3000"]
+    
+    # App
+    app_name: str = "Carpool Hub API"
+    app_version: str = "1.0.0"
+    debug: bool = True
+    
+    # Email (Optional)
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    
+    # External APIs
+    google_maps_api_key: str = ""
+    
+    class Config:
+        env_file = ".env"
+
+settings = Settings()""",
+
+        "database.py": """import sqlite3
+import uuid
+from typing import Optional, List, Dict, Any
+from datetime import datetime
+
+class Database:
+    def __init__(self, db_path: str = "carpool_hub.db"):
+        self.db_path = db_path
+        self.init_db()
+    
+    def get_connection(self):
+        return sqlite3.connect(self.db_path)
+    
+    def init_db(self):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        # Users table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id TEXT PRIMARY KEY,
+                email TEXT UNIQUE NOT NULL,
+                username TEXT UNIQUE NOT NULL,
+                hashed_password TEXT NOT NULL,
+                full_name TEXT NOT NULL,
+                phone TEXT,
+                profile_image TEXT,
+                bio TEXT,
+                role TEXT DEFAULT 'both',
+                rating REAL DEFAULT 0.0,
+                total_rides INTEGER DEFAULT 0,
+                is_verified BOOLEAN DEFAULT FALSE,
+                is_active BOOLEAN DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        # Rides table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS rides (
+                id TEXT PRIMARY KEY,
+                driver_id TEXT NOT NULL,
+                title TEXT NOT NULL,
+                description TEXT,
+                origin_address TEXT NOT NULL,
+                destination_address TEXT NOT NULL,
+                origin_lat REAL,
+                origin_lng REAL,
+                destination_lat REAL,
+                destination_lng REAL,
+                departure_time TIMESTAMP NOT NULL,
+                available_seats INTEGER NOT NULL,
+                price_per_seat REAL NOT NULL,
+                status TEXT DEFAULT 'active',
+                vehicle_info TEXT,
+                preferences TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (driver_id) REFERENCES users (id)
+            )
+        ''')
+        
+        # Bookings table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS bookings (
+                id TEXT PRIMARY KEY,
+                ride_id TEXT NOT NULL,
+                passenger_id TEXT NOT NULL,
+                seats_booked INTEGER NOT NULL,
+                total_price REAL NOT NULL,
+                status TEXT DEFAULT 'pending',
+                message TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ride_id) REFERENCES rides (id),
+                FOREIGN KEY (passenger_id) REFERENCES users (id)
+            )
+        ''')
+        
+        # Reviews table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS reviews (
+                id TEXT PRIMARY KEY,
+                ride_id TEXT NOT NULL,
+                reviewer_id TEXT NOT NULL,
+                reviewed_user_id TEXT NOT NULL,
+                rating INTEGER NOT NULL,
+                comment TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ride_id) REFERENCES rides (id),
+                FOREIGN KEY (reviewer_id) REFERENCES users (id),
+                FOREIGN KEY (reviewed_user_id) REFERENCES users (id)
+            )
+        ''')
+        
+        # Messages table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS messages (
+                id TEXT PRIMARY KEY,
+                ride_id TEXT NOT NULL,
+                sender_id TEXT NOT NULL,
+                content TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ride_id) REFERENCES rides (id),
+                FOREIGN KEY (sender_id) REFERENCES users (id)
+            )
+        ''')
+        
+        conn.commit()
+        conn.close()
+    
+    # User operations
+    def create_user(self, user_data: Dict[str, Any]) -> Optional[str]:
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        user_id = str(uuid.uuid4())
+        
+        try:
+            cursor.execute(
+                \"\"\"INSERT INTO users (id, email, username, hashed_password, full_name, phone, role) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?)\"\"\",
+                (user_id, user_data["email"], user_data["username"], user_data["hashed_password"],
+                 user_data["full_name"], user_data.get("phone"), user_data["role"])
+            )
+            conn.commit()
+            conn.close()
+            return user_id
+        except sqlite3.IntegrityError:
+            conn.close()
+            return None
+    
+    def get_user_by_email(self, email: str) -> Optional[Dict[str, Any]]:
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+        user = cursor.fetchone()
+        conn.close()
+        
+        if user:
+            return {
+                "id": user[0], "email": user[1], "username": user[2], "hashed_password": user[3],
+                "full_name": user[4], "phone": user[5], "profile_image": user[6], "bio": user[7],
+                "role": user[8], "rating": user[9], "total_rides": user[10], "is_verified": user[11],
+                "is_active": user[12]
+            }
+        return None
+    
+    def get_user_by_id(self, user_id: str) -> Optional[Dict[str, Any]]:
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+        user = cursor.fetchone()
+        conn.close()
+        
+        if user:
+            return {
+                "id": user[0], "email": user[1], "username": user[2], "hashed_password": user[3],
+                "full_name": user[4], "phone": user[5], "profile_image": user[6], "bio": user[7],
+                "role": user[8], "rating": user[9], "total_rides": user[10], "is_verified": user[11],
+                "is_active": user[12]
+            }
+        return None
+    
+    # Ride operations
+    def create_ride(self, ride_data: Dict[str, Any]) -> str:
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        ride_id = str(uuid.uuid4())
+        
+        cursor.execute(
+            \"\"\"INSERT INTO rides (id, driver_id, title, description, origin_address, destination_address,
+               origin_lat, origin_lng, destination_lat, destination_lng, departure_time, available_seats,
+               price_per_seat, vehicle_info, preferences) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\"\"\",
+            (ride_id, ride_data["driver_id"], ride_data["title"], ride_data["description"],
+             ride_data["origin_address"], ride_data["destination_address"], ride_data.get("origin_lat"),
+             ride_data.get("origin_lng"), ride_data.get("destination_lat"), ride_data.get("destination_lng"),
+             ride_data["departure_time"], ride_data["available_seats"], ride_data["price_per_seat"],
+             ride_data.get("vehicle_info"), ride_data.get("preferences"))
+        )
+        conn.commit()
+        conn.close()
+        return ride_id
+    
+    def search_rides(self, filters: Dict[str, Any]) -> List[Dict[str, Any]]:
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        query = \"\"\"
+            SELECT r.*, u.id, u.username, u.full_name, u.rating, u.profile_image
+            FROM rides r
+            JOIN users u ON r.driver_id = u.id
+            WHERE r.status = 'active' AND r.departure_time > datetime('now')
+        \"\"\"
+        params = []
+        
+        if filters.get("origin"):
+            query += " AND r.origin_address LIKE ?"
+            params.append(f"%{filters['origin']}%")
+        if filters.get("destination"):
+            query += " AND r.destination_address LIKE ?"
+            params.append(f"%{filters['destination']}%")
+        if filters.get("date"):
+            query += " AND date(r.departure_time) = ?"
+            params.append(filters["date"])
+        if filters.get("seats"):
+            query += " AND r.available_seats >= ?"
+            params.append(filters["seats"])
+        if filters.get("max_price"):
+            query += " AND r.price_per_seat <= ?"
+            params.append(filters["max_price"])
+        
+        query += " ORDER BY r.departure_time ASC"
+        
+        cursor.execute(query, params)
+        rides = cursor.fetchall()
+        conn.close()
+        
+        result = []
+        for ride in rides:
+            result.append({
+                "id": ride[0], "driver_id": ride[1], "title": ride[2], "description": ride[3],
+                "origin_address": ride[4], "destination_address": ride[5], "origin_lat": ride[6],
+                "origin_lng": ride[7], "destination_lat": ride[8], "destination_lng": ride[9],
+                "departure_time": ride[10], "available_seats": ride[11], "price_per_seat": ride[12],
+                "status": ride[13], "vehicle_info": ride[14], "preferences": ride[15],
+                "driver": {
+                    "id": ride[17], "username": ride[18], "full_name": ride[19],
+                    "rating": ride[20], "profile_image": ride[21]
+                }
+            })
+        
+        return result
+
+# Global database instance
+db = Database()""",
+
+        "models.py": """from pydantic import BaseModel, EmailStr, validator
+from datetime import datetime
+from typing import Optional, List
+from enum import Enum
+
+class RideStatus(str, Enum):
+    ACTIVE = "active"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+
+class BookingStatus(str, Enum):
+    PENDING = "pending"
+    CONFIRMED = "confirmed"
+    CANCELLED = "cancelled"
+
+class UserRole(str, Enum):
+    DRIVER = "driver"
+    PASSENGER = "passenger"
+    BOTH = "both"
+
+# User models
+class UserCreate(BaseModel):
+    email: EmailStr
+    username: str
+    password: str
+    full_name: str
+    phone: Optional[str] = None
+    role: UserRole = UserRole.BOTH
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+class UserProfile(BaseModel):
+    id: str
+    email: str
+    username: str
+    full_name: str
+    phone: Optional[str]
+    profile_image: Optional[str]
+    bio: Optional[str]
+    role: str
+    rating: float
+    total_rides: int
+    is_verified: bool
+
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+    bio: Optional[str] = None
+    profile_image: Optional[str] = None
+
+# Ride models
+class RideCreate(BaseModel):
+    title: str
+    description: Optional[str]
+    origin_address: str
+    destination_address: str
+    origin_lat: Optional[float]
+    origin_lng: Optional[float]
+    destination_lat: Optional[float]
+    destination_lng: Optional[float]
+    departure_time: datetime
+    available_seats: int
+    price_per_seat: float
+    vehicle_info: Optional[str]
+    preferences: Optional[str]
+
+class RideResponse(BaseModel):
+    id: str
+    driver: UserProfile
+    title: str
+    description: Optional[str]
+    origin_address: str
+    destination_address: str
+    departure_time: datetime
+    available_seats: int
+    price_per_seat: float
+    status: str
+    vehicle_info: Optional[str]
+    preferences: Optional[str]
+    created_at: datetime
+
+class RideUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    departure_time: Optional[datetime] = None
+    available_seats: Optional[int] = None
+    price_per_seat: Optional[float] = None
+    vehicle_info: Optional[str] = None
+    preferences: Optional[str] = None
+
+# Booking models
+class BookingCreate(BaseModel):
+    ride_id: str
+    seats_booked: int
+    message: Optional[str]
+
+class BookingResponse(BaseModel):
+    id: str
+    ride: RideResponse
+    passenger: UserProfile
+    seats_booked: int
+    total_price: float
+    status: str
+    message: Optional[str]
+    created_at: datetime
+
+# Review models
+class ReviewCreate(BaseModel):
+    ride_id: str
+    reviewed_user_id: str
+    rating: int
+    comment: Optional[str]
+    
+    @validator('rating')
+    def rating_must_be_valid(cls, v):
+        if v < 1 or v > 5:
+            raise ValueError('Rating must be between 1 and 5')
+        return v
+
+class ReviewResponse(BaseModel):
+    id: str
+    reviewer: UserProfile
+    reviewed_user: UserProfile
+    rating: int
+    comment: Optional[str]
+    created_at: datetime
+
+# Message models
+class MessageCreate(BaseModel):
+    ride_id: str
+    content: str
+
+class MessageResponse(BaseModel):
+    id: str
+    sender: UserProfile
+    content: str
+    created_at: datetime
+
+# Token models
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
+
+# Response models
+class SuccessResponse(BaseModel):
+    message: str
+    data: Optional[dict] = None
+
+class ErrorResponse(BaseModel):
+    detail: str
+    error_code: Optional[str] = None
+
+# Dashboard models
+class DashboardStats(BaseModel):
+    rides_as_driver: int
+    rides_as_passenger: int
+    pending_bookings: int
+    total_rating: float
+    total_rides: int""",
+
+        "auth.py": """from passlib.context import CryptContext
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
+from typing import Optional
+from fastapi import HTTPException, status, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+from config import settings
+from database import db
+from models import TokenData
+
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+security = HTTPBearer()
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
+    return encoded_jwt
+
+def authenticate_user(email: str, password: str):
+    user = db.get_user_by_email(email)
+    if not user:
+        return False
+    if not verify_password(password, user["hashed_password"]):
+        return False
+    return user
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+        token_data = TokenData(email=email)
+    except JWTError:
+        raise credentials_exception
+    
+    user = db.get_user_by_email(email=token_data.email)
+    if user is None:
+        raise credentials_exception
+    return user
+
+async def get_current_active_user(current_user: dict = Depends(get_current_user)):
+    if not current_user["is_active"]:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user""",
+
+        "routers/__init__.py": "# This file makes the routers directory a Python package",
+
+        "routers/auth.py": """from fastapi import APIRouter, HTTPException, Depends, status
+from datetime import timedelta
+
+from models import UserCreate, UserLogin, Token, UserProfile, SuccessResponse
+from auth import get_password_hash, authenticate_user, create_access_token, get_current_user
+from database import db
+from config import settings
+
+router = APIRouter(prefix="/auth", tags=["Authentication"])
+
+@router.post("/signup", response_model=SuccessResponse)
+async def signup(user: UserCreate):
+    # Check if user already exists
+    existing_user = db.get_user_by_email(user.email)
+    if existing_user:
+        raise HTTPException(
+            status_code=400,
+            detail="Email already registered"
+        )
+    
+    # Create new user
+    user_data = {
+        "email": user.email,
+        "username": user.username,
+        "hashed_password": get_password_hash(user.password),
+        "full_name": user.full_name,
+        "phone": user.phone,
+        "role": user.role.value
+    }
+    
+    user_id = db.create_user(user_data)
+    if user_id is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Username already taken"
+        )
+    
+    return SuccessResponse(
+        message="User created successfully",
+        data={"user_id": user_id, "email": user.email}
+    )
+
+@router.post("/login", response_model=Token)
+async def login(user_credentials: UserLogin):
+    user = authenticate_user(user_credentials.email, user_credentials.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+    access_token = create_access_token(
+        data={"sub": user["email"]}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@router.get("/me", response_model=UserProfile)
+async def read_users_me(current_user: dict = Depends(get_current_user)):
+    return UserProfile(**current_user)
+
+@router.post("/logout", response_model=SuccessResponse)
+async def logout(current_user: dict = Depends(get_current_user)):
+    # In a real application, you might want to blacklist the token
+    return SuccessResponse(message="Successfully logged out")""",
+
+        "routers/rides.py": """from fastapi import APIRouter, HTTPException, Depends, Query
+from typing import Optional, List
+
+from models import RideCreate, RideResponse, SuccessResponse
+from auth import get_current_user
+from database import db
+
+router = APIRouter(prefix="/rides", tags=["Rides"])
+
+@router.post("", response_model=SuccessResponse)
+async def create_ride(ride: RideCreate, current_user: dict = Depends(get_current_user)):
+    ride_data = {
+        "driver_id": current_user["id"],
+        "title": ride.title,
+        "description": ride.description,
+        "origin_address": ride.origin_address,
+        "destination_address": ride.destination_address,
+        "origin_lat": ride.origin_lat,
+        "origin_lng": ride.origin_lng,
+        "destination_lat": ride.destination_lat,
+        "destination_lng": ride.destination_lng,
+        "departure_time": ride.departure_time,
+        "available_seats": ride.available_seats,
+        "price_per_seat": ride.price_per_seat,
+        "vehicle_info": ride.vehicle_info,
+        "preferences": ride.preferences
+    }
+    
+    ride_id = db.create_ride(ride_data)
+    return SuccessResponse(
+        message="Ride created successfully",
+        data={"ride_id": ride_id}
+    )
+
+@router.get("", response_model=List[dict])
+async def search_rides(
+    origin: Optional[str] = Query(None),
+    destination: Optional[str] = Query(None),
+    date: Optional[str] = Query(None),
+    seats: Optional[int] = Query(None),
+    max_price: Optional[float] = Query(None)
+):
+    filters = {
+        "origin": origin,
+        "destination": destination,
+        "date": date,
+        "seats": seats,
+        "max_price": max_price
+    }
+    
+    # Remove None values
+    filters = {k: v for k, v in filters.items() if v is not None}
+    
+    rides = db.search_rides(filters)
+    return rides
+
+@router.get("/{ride_id}")
+async def get_ride(ride_id: str):
+    # Implementation for getting a specific ride
+    # This would need to be added to the database.py file
+    pass
+
+@router.get("/user/{user_id}")
+async def get_user_rides(user_id: str, current_user: dict = Depends(get_current_user)):
+    # Implementation for getting user's rides
+    # This would need to be added to the database.py file
+    pass""",
+
+        "main.py": """from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+
+from config import settings
+from database import db
+from routers import auth, rides
+
+# Lifespan events
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    print(f"🚗 {settings.app_name} v{settings.app_version} Starting...")
+    print("📚 API Documentation: http://localhost:8000/docs")
+    print("🏥 Health Check: http://localhost:8000/health")
+    
+    # Create sample data for testing
+    print("\\n=== Creating Sample Data ===")
+    from auth import get_password_hash
+    import uuid
+    
+    sample_users = [
+        {
+            "email": "john.driver@example.com",
+            "username": "johndriver",
+            "hashed_password": get_password_hash("password123"),
+            "full_name": "John Driver",
+            "phone": "+1234567890",
+            "role": "driver"
+        },
+        {
+            "email": "jane.passenger@example.com", 
+            "username": "janepassenger",
+            "hashed_password": get_password_hash("password123"),
+            "full_name": "Jane Passenger",
+            "phone": "+1234567891",
+            "role": "passenger"
+        }
+    ]
+    
+    for user_data in sample_users:
+        user_id = db.create_user(user_data)
+        if user_id:
+            print(f"✅ Created user: {user_data['email']}")
+        else:
+            print(f"ℹ️  User already exists: {user_data['email']}")
+    
+    print(f"\\n🚀 {settings.app_name} Ready!")
+    
+    yield
+    
+    # Shutdown
+    print(f"\\n👋 {settings.app_name} Shutting down...")
+
+# Initialize FastAPI app
+app = FastAPI(
+    title=settings.app_name,
+    version=settings.app_version,
+    description="Backend API for Carpool Hub application",
+    lifespan=lifespan
+)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include routers
+app.include_router(auth.router)
+app.include_router(rides.router)
+
+# Root endpoint
+@app.get("/")
+async def root():
+    return {
+        "message": f"Welcome to {settings.app_name}",
+        "version": settings.app_version,
+        "docs": "/docs"
+    }
+
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    return {
+        "status": "healthy",
+        "app": settings.app_name,
+        "version": settings.app_version
+    }
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=settings.debug
+    )""",
+
+        "run.py": """#!/usr/bin/env python3
+\"\"\"
+Carpool Hub Backend Runner
+Run this file to start the development server
+\"\"\"
+
+import uvicorn
+from config import settings
+
+if __name__ == "__main__":
+    print(f"🚗 Starting {settings.app_name} Development Server")
+    print(f"📍 Environment: {'Development' if settings.debug else 'Production'}")
+    print(f"🌐 CORS Origins: {settings.allowed_origins}")
+    print("=" * 50)
+    
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=settings.debug,
+        log_level="info" if settings.debug else "warning"
+    )""",
+
+        "README.md": """# 🚗 Carpool Hub Backend
+
+A comprehensive Python FastAPI backend for the Carpool Hub rideshare application.
+
+## 🚀 Quick Start
+
+1. **Clone and Setup**
+   ```bash
+   git clone <your-repo-url>
+   cd carpool-hub-backend
