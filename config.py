@@ -4,7 +4,15 @@ from typing import List
 class Settings(BaseSettings):
     # Database
     database_url: str = "sqlite:///./carpool_hub.db"
+
+    # Update these default values:
+    google_maps_api_key: str = "AIzaSyCJT3FV9SH-5Ln1ooMmWDi-XO_r13OVYqA"
     
+    # If using Firebase:
+    firebase_api_key: str = "AIzaSyDpd11QLQi8uk-ffF6GU1lsVPoXri7HWcE"
+    firebase_project_id: str = "carpool-hub-apis2"
+    
+    # Keep your existing settings...
     # Security
     secret_key: str
     algorithm: str = "HS256"
@@ -23,10 +31,7 @@ class Settings(BaseSettings):
     smtp_port: int = 587
     smtp_user: str = ""
     smtp_password: str = ""
-    
-    # External APIs
-    google_maps_api_key: str = ""
-    
+
     class Config:
         env_file = ".env"
 
